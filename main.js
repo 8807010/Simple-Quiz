@@ -38,7 +38,8 @@ let score = 0;
 let questionIndex = 0;
 
 clearPage();
-showQuestion()
+showQuestion();
+submitBtn.onclick = checkAnswer;
 
 function clearPage() {
 	headerContainer.innerHTML = '';
@@ -67,5 +68,17 @@ function showQuestion() {
 
 		// listContainer.innerHTML = listContainer.innerHTML + answerHTML;
 		listContainer.innerHTML += answerHTML;
+	}
+}
+
+function checkAnswer() {
+
+	//Находим выбранную радио кнопку
+	const checkedRadio = listContainer.querySelector('input[type="radio"]:checked');
+
+	//Если ответ не выбран - ничего не делаем, выходим из функции
+	if (!checkedRadio) { // "!" чтобы не использовать лишний блок кода else 
+		submitBtn.blur(); //удаляет фокус клавиатуры с текущего элемента
+		return
 	}
 }
