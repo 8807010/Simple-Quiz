@@ -29,3 +29,43 @@ const questions = [{
 		correct: 2,
 	},
 ];
+
+const headerContainer = document.querySelector('#header');
+const listContainer = document.querySelector('#list');
+const submitBtn = document.querySelector('#submit');
+
+let score = 0;
+let questionIndex = 0;
+
+clearPage();
+showQuestion()
+
+function clearPage() {
+	headerContainer.innerHTML = '';
+	listContainer.innerHTML = '';
+}
+
+function showQuestion() {
+
+	//Вопрос
+	const headerTemplate = `<h2 class="title">%title%</h2>`;
+	const title = headerTemplate.replace('%title%', questions[questionIndex]['question']);
+	headerContainer.innerHTML = title;
+
+	//Варианты ответов
+	for (answerText of questions[questionIndex]['answers']) {
+
+		const questionTemplate =
+			`<li>
+				<label>
+					<input type="radio" class="answer" name="answer" />
+					<span>%answer%</span>
+				</label>
+			</li>`;
+
+		const answerHTML = questionTemplate.replace('%answer%', answerText);
+
+		// listContainer.innerHTML = listContainer.innerHTML + answerHTML;
+		listContainer.innerHTML += answerHTML;
+	}
+}
