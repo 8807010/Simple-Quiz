@@ -54,20 +54,26 @@ function showQuestion() {
 	headerContainer.innerHTML = title;
 
 	//Варианты ответов
+	let answerNumber = 1;
 	for (answerText of questions[questionIndex]['answers']) {
 
 		const questionTemplate =
 			`<li>
 				<label>
-					<input type="radio" class="answer" name="answer" />
+					<input value="%number%" type="radio" class="answer" name="answer" />
 					<span>%answer%</span>
 				</label>
 			</li>`;
 
-		const answerHTML = questionTemplate.replace('%answer%', answerText);
+		const answerHTML = questionTemplate
+			.replace('%answer%', answerText)
+			.replace('%number%', answerNumber);
+		// let answerHTML = questionTemplate.replace('%answer%', answerText);
+		// answerHTML = answerHTML.replace('%number%', answerNumber);
 
 		// listContainer.innerHTML = listContainer.innerHTML + answerHTML;
 		listContainer.innerHTML += answerHTML;
+		answerNumber++;
 	}
 }
 
@@ -81,4 +87,62 @@ function checkAnswer() {
 		submitBtn.blur(); //удаляет фокус клавиатуры с текущего элемента
 		return
 	}
+
+	//Узнаем номер твета пользователя
+	const userAnswer = parseInt(checkedRadio.value);
+
+	//Если ответил верно - увеличиваем счет
+	if (userAnswer === questions[questionIndex]['correct']) {
+		score++;
+	}
+
+	if (questionIndex !== questions.length - 1) {
+		questionIndex++;
+		clearPage();
+		showQuestion();
+		return;
+	} else {
+		clearPage();
+		showResults();
+	}
+
+}
+
+function showResults() {
+
+	const resultsTemplate = `
+		<h2 class="title">%title%</h2>
+		<h3 class="summary">%message%</h3>
+		<p class="result">%result%</p>
+	`;
+
+	let title, message;
+
+	//Варианты заголовков и текста
+	if (score === questions.length) {
+		title = 'Поздравляем! 🎉';
+		message = 'Вы ответили верно на все вопросы! 😎👍';
+	} else if ((score * 100) / questions.length >= 50) {
+		title = 'Не плохой результат! 😉';
+		message = 'Вы дали более половины правильных ответов! 👍';
+	} else {
+		title = 'Стоит постараться 😐';
+		message = 'Пока у вас меньше половины правильных ответов';
+	}
+
+	//Результат
+	let result = `${score} из ${questions.length}`;
+
+	//Финальный ответ, подставляю данные в шаблон
+	const finalMessage = resultsTemplate
+		.replace('%title%', title)
+		.replace('%message%', message)
+		.replace('%result%', result);
+
+	headerContainer.innerHTML = finalMessage;
+
+	//Меняем кнопку на "Играть снова"
+	submitBtn.blur();
+	submitBtn.innerHTML = 'Начать заново';
+	submitBtn.onclick = () => history.go(); //этот вызов перезагрузит страницу:
 }
